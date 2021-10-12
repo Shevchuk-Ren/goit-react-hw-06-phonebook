@@ -1,53 +1,47 @@
-import { createStore, applyMiddleware, combineReducers } from 'redux';
-import { composeWithDevTools } from 'redux-devtools-extension';
+import { combineReducers } from 'redux';
+import { configureStore } from '@reduxjs/toolkit';
+import logger from 'redux-logger';
+import {
+  persistStore,
+  persistReducer,
+  FLUSH,
+  REHYDRATE,
+  PAUSE,
+  PERSIST,
+  PURGE,
+  REGISTER,
+} from 'redux-persist';
+
+import storage from 'redux-persist/lib/storage';
 import phoneReducer from './phoneBook/phonebook-reducer';
 
-// const initialState = {};
-
-// const reducer = (initialState, composeWithDevTools(applyMiddleware([])))
-// // => {
-// //     console.log(`reducer and action`)
-// //     return initialState;
-// // };
-
-// const phoneInitialState = {
-//     phoneBook: {
-//         value: [],
-//         step: 1,
-//     }
-// };
-// const valueReducer = (state = [], { type, payload }) => {
-//         switch (type) {
-//         case 'phone/PUPS':
-//             return state + payload
-
-//         default:
-//             return state;
-//     }
-// }
-// const phoneReducer = (state = phoneInitialState, { type, payload }) => {
-//     switch (type) {
-//         case 'phone/PUPS':
-//             return {
-//                 ...state,
-//                 value: payload
-//             }
-
-//         default:
-//             return state;
-//     }
-// }
-// const stepReducer = (state = 1, action) => state
-
-// const phoneReducer = combineReducers({
-//   value: valueReducer,
-//         step: stepReducer,
-// })
+const persistConfig = {
+  key: 'contacts',
+  storage,
+  blacklist: ['filter'],
+};
 
 const rootReducer = combineReducers({
-  phoneBook: phoneReducer,
+  phoneBook: persistReducer(persistConfig, phoneReducer),
 });
 
-const store = createStore(rootReducer, composeWithDevTools());
+const store = configureStore({
+  reducer: rootReducer,
 
-export default store;
+  middleware: getDefaultMiddleware =>
+    getDefaultMiddleware({
+      serializableCheck: {
+        ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
+      },
+    }).concat(logger),
+  devTools: process.env.NODE_ENV === 'development',
+});
+
+let persistor = persistStore(store);
+
+const feedbackStore = {
+  store,
+  persistor,
+};
+
+export default feedbackStore;

@@ -1,1 +1,1 @@
-export { default } from './Phonebook';
+export { default } from './PhoneBook.container';

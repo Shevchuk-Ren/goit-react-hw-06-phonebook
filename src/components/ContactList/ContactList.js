@@ -16,17 +16,6 @@ const ContactList = ({ contacts, onDelete }) => (
   </List>
 );
 
-ContactList.propTypes = {
-  onDelete: PropTypes.func.isRequired,
-  contacts: PropTypes.arrayOf(
-    PropTypes.shape({
-      name: PropTypes.string.isRequired,
-      number: PropTypes.string.isRequired,
-      id: PropTypes.string.isRequired,
-    }),
-  ).isRequired,
-};
-
 const mapStateToProps = state => {
   const { contacts, filter } = state.phoneBook;
   const normalizedFilter = contacts.filter(contact =>
@@ -39,5 +28,16 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => ({
   onDelete: id => dispatch(deleteContact(id)),
 });
+
+ContactList.propTypes = {
+  onDelete: PropTypes.func.isRequired,
+  contacts: PropTypes.arrayOf(
+    PropTypes.shape({
+      name: PropTypes.string.isRequired,
+      number: PropTypes.string.isRequired,
+      id: PropTypes.string.isRequired,
+    }),
+  ).isRequired,
+};
 
 export default connect(mapStateToProps, mapDispatchToProps)(ContactList);

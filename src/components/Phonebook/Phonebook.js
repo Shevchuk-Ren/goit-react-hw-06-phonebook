@@ -1,8 +1,6 @@
 import { v4 as uuidv4 } from 'uuid';
 import React from 'react';
 import { Form, Label, Input, Button } from './PhoneBook.styled';
-import { connect } from 'react-redux';
-import { addContact } from '../../redux/phoneBook/phonebook-actions';
 
 class Phonebook extends React.Component {
   state = {
@@ -42,7 +40,7 @@ class Phonebook extends React.Component {
           <Input
             id={formNameId}
             type="text"
-            value={name}
+            value={name.trim()}
             name="name"
             pattern="^[a-zA-Zа-яА-Я]+(([' -][a-zA-Zа-яА-Я ])?[a-zA-Zа-яА-Я]*)*$"
             title="Имя может состоять только из букв, апострофа, тире и пробелов. Например Adrian, Jacob Mercer, Charles de Batz de Castelmore d'Artagnan и т. п."
@@ -57,7 +55,7 @@ class Phonebook extends React.Component {
             id={formNumberId}
             type="tel"
             name="number"
-            value={number}
+            value={number.trim()}
             pattern="\+?\d{1,4}?[-.\s]?\(?\d{1,3}?\)?[-.\s]?\d{1,4}[-.\s]?\d{1,4}[-.\s]?\d{1,9}"
             title="Номер телефона должен состоять цифр и может содержать пробелы, тире, круглые скобки и может начинаться с +"
             required
@@ -72,11 +70,4 @@ class Phonebook extends React.Component {
   }
 }
 
-const mapStateToProps = state => ({
-  contacts: state.phoneBook.contacts,
-});
-const mapDispatchToProps = dispatch => ({
-  onSubmit: data => dispatch(addContact(data)),
-});
-
-export default connect(mapStateToProps, mapDispatchToProps)(Phonebook);
+export default Phonebook;
